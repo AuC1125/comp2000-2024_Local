@@ -16,10 +16,12 @@ public class Circle {
   // methods
   public void circle(Graphics g, Point mousePos) {
     if(contains(mousePos)) {
-        
+      g.setColor(new Color(128, 128, 128, 128));
+      
     }
-        g.drawOval(x, y, size, size);
-        g.fillOval(x, y, size, size);
+        g.drawOval(mousePos.x, mousePos.y, size, size);
+        g.setColor(Color.GRAY);
+        g.fillOval(mousePos.x, mousePos.y, size, size);
   }
 
   public boolean contains(Point p) {

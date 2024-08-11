@@ -20,7 +20,8 @@ public class Main extends JFrame {
       @Override
       public void paint(Graphics g) {
         grid.paint(g, getMousePosition());
-        circle.circle(g, getMousePosition());
+        circle.savePoint(getMousePosition());
+        circle.circles(g);
       }
     }
 
@@ -35,6 +36,11 @@ public class Main extends JFrame {
     public void run() {
       while(true) {
         repaint();
+        try {
+          Thread.sleep(10);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
       }
     }
 }

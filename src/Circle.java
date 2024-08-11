@@ -1,39 +1,28 @@
-import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Point;
+import java.util.ArrayList;
 
 public class Circle {
-  // fields
-  int x;
-  int y;
-  int size = 35;
+    int size = 35;
+    int maxTrails = 100;
+    ArrayList<Point> points = new ArrayList<>();
 
-  // constructors
-  public Circle() {
-    
-  }
 
-  // methods
-  public void circle(Graphics g, Point mousePos) {
-    if(contains(mousePos)) {
-      g.setColor(new Color(128, 128, 128, 128));
-      
+    public void savePoint(Point mousePos) {
+        if (mousePos != null) {
+            points.add(0, mousePos);
+            if (points.size() > maxTrails) {
+                points.removeLast();
+            }
+        }
     }
-        g.drawOval(mousePos.x, mousePos.y, size, size);
-        g.setColor(Color.GRAY);
-        g.fillOval(mousePos.x, mousePos.y, size, size);
-  }
 
-  public boolean contains(Point p) {
-    if(p != null) {
-      return true;
-    } else {
-      return false;
+    public void circles(Graphics g) {
+        for (int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            g.setColor(new Color(0, 0, 0, 128));
+            g.fillOval(p.x, p.y, size-20, size-20);
+            }
+        }
     }
-  }
-
-public static void paint(Graphics g, Point mousePosition) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'paint'");
-}
-}

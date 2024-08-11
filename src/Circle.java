@@ -22,7 +22,7 @@ public class Circle {
     public void circles(Graphics g) {
         for (int i = 0; i < points.size(); i++) {
             Point p = points.get(i);
-            g.setColor(new Color(0, 0, 0, 128));
+            g.setColor(new Color(0, 0, 0, 127));
             g.fillOval(p.x, p.y, size-20, size-20);
             }
         }

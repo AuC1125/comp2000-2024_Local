@@ -7,13 +7,14 @@ public class Circle {
     int size = 35;
     int maxTrails = 100;
     ArrayList<Point> points = new ArrayList<>();
-
+    Point lastMousePos = null;
 
     public void savePoint(Point mousePos) {
-        if (mousePos != null) {
-            points.add(0, mousePos);
+        if (mousePos != null && !mousePos.equals(lastMousePos)) {
+            lastMousePos = mousePos;
+            points.add(mousePos);
             if (points.size() > maxTrails) {
-                points.removeLast();
+                points.remove(0);
             }
         }
     }

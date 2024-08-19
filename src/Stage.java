@@ -14,6 +14,12 @@ public class Stage {
 
   public void paint(Graphics g, Point mouseLoc) {
     grid.paint(g, mouseLoc);
+    if (grid.cellAtPoint(mouseLoc).isPresent()){
+      System.out.println(grid.cellAtPoint(mouseLoc).get().toString());
+      g.drawString(grid.cellAtPoint(mouseLoc).get().toString(), 740, 300);
+    }
+
+    g.drawString("onetwethree", 800, 200);
     for(Actor a: actors) {
       a.paint(g);
     }

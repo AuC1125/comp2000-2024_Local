@@ -4,18 +4,19 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 public class Cell extends Rectangle {
-  // fields
   static int size = 35;
+  char col;
+  int row;
 
-  // constructors
-  public Cell(int inX, int inY) {
-    super(inX, inY, size, size);
+  public Cell(char inCol, int inRow, int x, int y) {
+    super(x, y, size, size);
+    col = inCol;
+    row = inRow;
   }
 
-  // methods
   public void paint(Graphics g, Point mousePos) {
     if(contains(mousePos)) {
-      g.setColor(Color.LIGHT_GRAY);
+      g.setColor(Color.GRAY);
     } else {
       g.setColor(Color.WHITE);
     }
@@ -32,4 +33,3 @@ public class Cell extends Rectangle {
     }
   }
 }
-

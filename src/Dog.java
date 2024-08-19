@@ -6,8 +6,7 @@ public class Dog extends Actor {
   public Dog(Cell inLoc) {
     loc = inLoc;
     color = Color.YELLOW;
-    polygons = new ArrayList<>();
-
+    display = new ArrayList<Polygon>();
     Polygon ear1 = new Polygon();
     ear1.addPoint(loc.x + 5, loc.y + 5);
     ear1.addPoint(loc.x + 15, loc.y + 5);
@@ -21,8 +20,8 @@ public class Dog extends Actor {
     face.addPoint(loc.x + 27, loc.y + 7);
     face.addPoint(loc.x + 27, loc.y + 25);
     face.addPoint(loc.x + 8, loc.y + 25);
-    polygons.add(ear1);
-    polygons.add(ear2);
-    polygons.add(face);
+    display.add(face);
+    display.add(ear1);
+    display.add(ear2);
   }
 }

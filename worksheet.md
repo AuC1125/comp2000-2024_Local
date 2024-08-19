@@ -81,3 +81,119 @@ Is there a place that you could put all the common parts?
 # Task 9
 
 Draw a picture of the inheritance hierarchy you have created.  You should (loosely) use [UML notation](http://umich.edu/~eecs381/handouts/UMLNotationSummary.pdf) for your diagram.  You are using UML In this case, and all through this course, only for "a rough sketch of an idea".
+
+# Task 10
+
+Did you notice the repetition in the stage paint method?  All three actors have the `paint` method called on them.  In fact, we might later want to have dozens of actors on the stage at any one time, we don't want dozens of calls to `someone.paint(g);`.  What we need is a collection to store all the actors, something like an array that we can put them all in.  Then we can just loop over that array and call  `paint` on every element.  _I think_ we should use an `ArrayList` (https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ArrayList.html).  Notice it is a generic collection?  You will need to use generics to make this work.  Put all the actors in a single array list called `actors` and then loop over this list to paint them.  Once you have done that you might like to add more actors to the stage.
+
+🤔 In my solution, I will declare the actors list as a `List` instead of an `ArrayList`.  Any idea why?  Why does this even work?
+
+# Task 11
+
+Turns out you are not able to use colours to distinguish the different types of actors!  You are going to need to draw little shapes to represent them.  You have been told you can't use images, you have to draw with Java2D primitives so the game can scale up and down as required.  The `Graphics` objects we are painting on know how to draw `Polygon`s (https://docs.oracle.com/en/java/javase/17/docs/api/java.desktop/java/awt/Polygon.html) so that is what we are going to use.  However, one polygon is not enough for each actor, we need each to be made of a list of polygons.  We will use `ArrayList` again!  Have the `Color` field of `Actor` changed to a list of polygons and initialise each subclass to an appropriate set of polygons.  You might find the following polygons a useful starting point where `location` is the top-left point of the actor (but I am sure you can do better as well - share your designs on the forums!):
+
+## Cat
+
+~~~~~
+    Polygon ear1 = new Polygon();
+    ear1.addPoint(loc.x + 11, loc.y + 5);
+    ear1.addPoint(loc.x + 15, loc.y + 15);
+    ear1.addPoint(loc.x + 7, loc.y + 15);
+    Polygon ear2 = new Polygon();
+    ear2.addPoint(loc.x + 22, loc.y + 5);
+    ear2.addPoint(loc.x + 26, loc.y + 15);
+    ear2.addPoint(loc.x + 18, loc.y + 15);
+    Polygon face = new Polygon();
+    face.addPoint(loc.x + 5, loc.y + 15);
+    face.addPoint(loc.x + 29, loc.y + 15);
+    face.addPoint(loc.x + 17, loc.y + 30);
+~~~~~
+
+## Dog
+
+~~~~~
+    Polygon ear1 = new Polygon();
+    ear1.addPoint(loc.x + 5, loc.y + 5);
+    ear1.addPoint(loc.x + 15, loc.y + 5);
+    ear1.addPoint(loc.x + 5, loc.y + 15);
+    Polygon ear2 = new Polygon();
+    ear2.addPoint(loc.x + 20, loc.y + 5);
+    ear2.addPoint(loc.x + 30, loc.y + 5);
+    ear2.addPoint(loc.x + 30, loc.y + 15);
+    Polygon face = new Polygon();
+    face.addPoint(loc.x + 8, loc.y + 7);
+    face.addPoint(loc.x + 27, loc.y + 7);
+    face.addPoint(loc.x + 27, loc.y + 25);
+    face.addPoint(loc.x + 8, loc.y + 25);
+~~~~~
+
+## Bird
+
+~~~~~
+    Polygon wing1 = new Polygon();
+    wing1.addPoint(loc.x + 5, loc.y + 5);
+    wing1.addPoint(loc.x + 15, loc.y + 17);
+    wing1.addPoint(loc.x + 5, loc.y + 17);
+    Polygon wing2 = new Polygon();
+    wing2.addPoint(loc.x + 30, loc.y + 5);
+    wing2.addPoint(loc.x + 20, loc.y + 17);
+    wing2.addPoint(loc.x + 30, loc.y + 17);
+    Polygon body = new Polygon();
+    body.addPoint(loc.x + 15, loc.y + 10);
+    body.addPoint(loc.x + 20, loc.y + 10);
+    body.addPoint(loc.x + 20, loc.y + 25);
+    body.addPoint(loc.x + 15, loc.y + 25);
+~~~~~
+
+# Task 12
+
+In this task we will add a method to the grid class that returns whatever cell is under a particular location.
+
+Such a method needs to take in a `Point` and return back a `Cell`.  It will do a simple calculation to turn the x and y coordinates into the right array indices and look them up.
+
+However, there are some areas on our stage where there are no cells, not to mention what to do when a `null` point is passed in!
+
+So, we need a method that _might_ return a `Cell`.  What should it do when it can't find a cell?  Return `null`?  Definitely not!!!!  You are just asking for a asking for null-pointer exception if you do that.  Instead, we will use the `Optional` generic container (https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html).  
+
+Add the following method to `Grid` that will return whatever cell is located around the point that is passed in.
+
+~~~~~
+public Optional<Cell> cellAtPoint(Point p)
+~~~~~
+
+🤔 How about we improve the `cellAtColRow` method now we know about optional containers?
+
+🤔 Now that we have `cellAtPoint`, lets use it.  Grow the app window to 1024x720 so we have some clear space to the right of the grid.  In this space, put the details of whatever cell we are hoving over.  For example, you might put the type of cell that is located there, and what it's elevation is.  There are many ways to do this, but one good way is to call `cellAtPoint` while painting the stage and use the resulting cell information.
+
+# Task 13
+
+Our task now is to add the ability to read in configuration data from a file.  Someone else at the company (person A) has tried and has committed some broken code.
+
+A file is kept in a "data" folder called "stage1.rvb". That file has one line for each configuration item.  We begin with just the character locations.
+
+This all seems OK, but they are getting an error on the build.  Track down the error and fix it for them.
+
+# Task 14
+
+At the moment, the file reading code will thrown an exception if it fails to read a file.  You should change this code so that _it handles a thrown an `IOException`_.  This means you will have to think hard about what to do on a failed file read.
+
+# Task 15
+
+Add the following method to the `Grid` class
+
+~~~~~
+    /**
+     * Takes a cell consumer (i.e. a function that has a single `Cell` argument and
+     * returns `void`) and applies that consumer to each cell in the grid.
+     * @param func The `Cell` to `void` function to apply at each spot.
+     */
+    public void doToEachCell(Consumer<Cell> func) {
+      // Your job to add the body
+    }
+~~~~~
+
+ Notice that the method accepts a `Consumer` functional interface.
+
+ Now use this method to turn the `paint` method of the `Grid` class into a single line of code.  I.e. remove the double-nested loop and replace it with a call to `doToEachCell`.
+
+🤔 Can you find anywhere else this is useful?  🤔🤔 Can you make any other useful _higher order_ methods?

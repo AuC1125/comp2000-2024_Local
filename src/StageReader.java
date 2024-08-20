@@ -20,7 +20,7 @@ public class StageReader {
         char col = cellMatcher.group(1).charAt(0);
         int row = Integer.parseInt(cellMatcher.group(2));
         stage.grid.cellAtColRow(col, row).ifPresent(cellsInQuestion::add);
-        //cellsInQuestion.add(stage.grid.cellAtColRow(col, row));
+        // cellsInQuestion.add(stage.grid.cellAtColRow(col, row));
       } else {
         System.out.println("no match " + key);
       }

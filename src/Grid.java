@@ -24,7 +24,7 @@ public class Grid {
 
   public void paint(Graphics g, Point mousePos) {
     doToEachCell(cell -> cell.paint(g, mousePos));
-    doToEachCell(cell -> cell.x = (cell.x + 1) % 1024);
+    // doToEachCell(cell -> cell.x = (cell.x + 1) % 1024);
   }
 
   public void doToEachCell(Consumer<Cell> func) {

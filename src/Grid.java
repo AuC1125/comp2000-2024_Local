@@ -1,15 +1,20 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class Grid {
   Cell[][] cells = new Cell[20][20];
-
+  
   public Grid() {
-    for (int i = 0; i < cells.length; i++) {
-      for (int j = 0; j < cells[i].length; j++) {
-        cells[i][j] = new Cell(colToLabel(i), j, 10 + Cell.size * i, 10 + Cell.size * j);
+    for(int i=0; i<cells.length; i++) {
+      for(int j=0; j<cells[i].length; j++) {
+        cells[i][j] = new Cell(colToLabel(i), j, 10+Cell.size*i, 10+Cell.size*j);
       }
     }
   }
@@ -23,22 +28,15 @@ public class Grid {
   }
 
   public void paint(Graphics g, Point mousePos) {
-    doToEachCell(cell -> cell.paint(g, mousePos));
-    // doToEachCell(cell -> cell.x = (cell.x + 1) % 1024);
+    doToEachCell( (Cell c) -> c.paint(g, mousePos) );
   }
-
-  public void doToEachCell(Consumer<Cell> func) {
-    for (Cell[] c : cells)
-      for (Cell apples : c)
-        func.accept(apples);
-  }
-
-
 
   public Optional<Cell> cellAtColRow(int c, int r) {
-    if (c >= 0 && c < cells.length && r >= 0 && r < cells[r].length)
+    if(c >= 0 && c < cells.length && r >=0 && r < cells[c].length) {
       return Optional.of(cells[c][r]);
-    return Optional.empty();
+    } else {
+      return Optional.empty();
+    }
   }
 
   public Optional<Cell> cellAtColRow(char c, int r) {
@@ -46,10 +44,50 @@ public class Grid {
   }
 
   public Optional<Cell> cellAtPoint(Point p) {
-    if (p == null)
-      return Optional.empty();
-    int x = (int) (p.getX() - 10) / Cell.size;
-    int y = (int) (p.getY() - 10) / Cell.size;
-    return cellAtColRow(x, y);
+    for(int i=0; i < cells.length; i++) {
+      for(int j=0; j < cells[i].length; j++) {
+        if(cells[i][j].contains(p)) {
+          return Optional.of(cells[i][j]);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Takes a cell consumer (i.e. a function that has a single `Cell` argument and
+   * returns `void`) and applies that consumer to each cell in the grid.
+   * @param func The `Cell` to `void` function to apply at each spot.
+   */
+  public void doToEachCell(Consumer<Cell> func) {
+    for(int i=0; i < cells.length; i++) {
+      for(int j=0; j < cells[i].length; j++) {
+        func.accept(cells[i][j]);
+      }
+    }
+  }
+
+  public List<Cell> getRadius(Cell from, int size) {
+    int i = labelToCol(from.col);
+    int j = from.row;
+    Set<Cell> inRadius = new HashSet<Cell>();
+    if (size > 0) {
+        cellAtColRow(colToLabel(i), j - 1).ifPresent(inRadius::add);
+        cellAtColRow(colToLabel(i), j + 1).ifPresent(inRadius::add);
+        cellAtColRow(colToLabel(i - 1), j).ifPresent(inRadius::add);
+        cellAtColRow(colToLabel(i + 1), j).ifPresent(inRadius::add);
+    }
+
+    for(Cell c: inRadius.toArray(new Cell[0])) {
+        inRadius.addAll(getRadius(c, size - 1));
+    }
+    return new ArrayList<Cell>(inRadius);
+  }
+
+  public void paintOverlay(Graphics g, List<Cell> cells, Color color) {
+    g.setColor(color);
+    for(Cell c: cells) {
+      g.fillRect(c.x+2, c.y+2, c.width-4, c.height-4);
+    }
   }
 }

@@ -44,13 +44,19 @@ public class Grid {
   }
 
   public Optional<Cell> cellAtPoint(Point p) {
-    for(int i=0; i < cells.length; i++) {
-      for(int j=0; j < cells[i].length; j++) {
-        if(cells[i][j].contains(p)) {
-          return Optional.of(cells[i][j]);
-        }
+    CellIterator iter = new CellIterator(cells);
+    while (iter.hasNext()) {
+      Cell temp = iter.next();
+      if(temp.contains(p)) {
+        return Optional.of(temp);
       }
     }
+    // for (Cell[] oneCellArr : cells)
+    //   for (Cell oneCell : oneCellArr)
+    //   if(oneCell.contains(p)) {
+    //     return Optional.of(oneCell);
+    //   }
+
     return Optional.empty();
   }
 

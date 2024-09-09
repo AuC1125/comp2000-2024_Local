@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class Grid {
+public class Grid implements Iterable<Cell> {
   Cell[][] cells = new Cell[20][20];
   
   public Grid() {
@@ -44,19 +44,11 @@ public class Grid {
   }
 
   public Optional<Cell> cellAtPoint(Point p) {
-    CellIterator iter = new CellIterator(cells);
-    while (iter.hasNext()) {
-      Cell temp = iter.next();
-      if(temp.contains(p)) {
-        return Optional.of(temp);
+    for(Cell c: this) {
+      if(c.contains(p)) {
+        return Optional.of(c);
       }
     }
-    // for (Cell[] oneCellArr : cells)
-    //   for (Cell oneCell : oneCellArr)
-    //   if(oneCell.contains(p)) {
-    //     return Optional.of(oneCell);
-    //   }
-
     return Optional.empty();
   }
 
@@ -66,10 +58,8 @@ public class Grid {
    * @param func The `Cell` to `void` function to apply at each spot.
    */
   public void doToEachCell(Consumer<Cell> func) {
-    for(int i=0; i < cells.length; i++) {
-      for(int j=0; j < cells[i].length; j++) {
-        func.accept(cells[i][j]);
-      }
+    for(Cell c: this) {
+      func.accept(c);
     }
   }
 
@@ -95,5 +85,10 @@ public class Grid {
     for(Cell c: cells) {
       g.fillRect(c.x+2, c.y+2, c.width-4, c.height-4);
     }
+  }
+
+  @Override
+  public CellIterator iterator() {
+    return new CellIterator(cells);
   }
 }
